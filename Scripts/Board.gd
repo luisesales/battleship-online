@@ -14,7 +14,7 @@ func _ready():
 					"type": "default" ,
 					"x" : x,
 					"y" : y,
-					"player" : true
+					"vertical" : false
 					
 			}
 			set_cell(0, Vector2(x,y), 2 , Vector2i(0,0), 0) 
@@ -27,7 +27,7 @@ func _ready():
 					"type": "default" ,
 					"x" : x,
 					"y" : y,
-					"player" : false
+					"vertical" : false
 					
 			}
 			set_cell(0, Vector2(x,y), 2 , Vector2i(0,0), 0) 
