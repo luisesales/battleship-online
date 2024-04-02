@@ -24,5 +24,7 @@ layer_1/name = "SelectedTile"
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("2_ibkaa")
 
+[node name="Sprite2D" type="Sprite2D" parent="Screen"]
+
 [node name="GameController" type="Node2D" parent="."]
 script = ExtResource("4_4y3qs")
