@@ -117,7 +117,7 @@ func moveShip(tile):
 	pass
 			
 func selectTile(tile):	
-		set_cell(1, tile, 0, Vector2i(0,0), 0)
+		set_cell(1, tile, 9, Vector2i(0,0), 0)
 		aux = tile
 		
 func setupGame():
