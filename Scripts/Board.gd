@@ -35,32 +35,83 @@ func _ready():
 			set_cell(0, Vector2(x,y), 2 , Vector2i(0,0), 0) 
 			set_cell(1, Vector2(x,y), 8 , Vector2i(0,0), 0) 
 
-func locateShip(tile, board): 
-	var ship = {}
+func locateShipTip(tile, board): 
+	var shipTip 
 	for boardTile in board :
 		if boardTile["boat"] == board[str(tile)]["boat"] : 
-			ship[str(Vector2(board[str(tile)]["x"],board[str(tile)]["y"]))] = boardTile
-	return ship
+			shipTip = boardTile
+			return shipTip
+	
 	##return  {piece : data for piece, data in board.items() if data.get("boat") == board[str(tile)]["boat"]}
 
 func attack(tile, board):
+	##Checking if tile hasn't been attacked
 	if board[str(tile)]["type"] > 1 : 
+		
+		##Checking if tile is a water tile
 		if board[str(tile)]["type"] == 2 : 
+			
+			##Updating to miss tile
 			board[str(tile)]["type"] = 0
+			
 		else :
-			board[str(tile)]["type"] = 1		
+			
+			##Updating to hit tile
+			board[str(tile)]["type"] = 1	
+				
 		set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]), board[str(tile)]["type"] , Vector2i(0,0), 0) 	
 
 func rotateShip(tile, board):
-	if board[str(tile)]["type"] > 2 :		
-		var ship = locateShip(tile, board)
-		if 	board[str(tile)]["vertical"] :
-			for n in range (1, gameController.shipSize[ship[0]["type"]]) : 
-				if board[str(Vector2(board[str(tile)]["x"]+n, board[str(tile)]["y"]))]["type"] > 2 :
+	##Checking if There's a boat in tile
+	if board[str(tile)]["type"] > 2 :
+			
+		##Locating ship's tip on board	
+		var shipTip = locateShipTip(tile, board)
+		
+		##Checking if boat's on the vertical 
+		if 	shipTip["vertical"] :
+			
+			##Checking if the new position are unoccupied
+			for n in range (1, gameController.shipSize[shipTip["type"]]) : 
+				if board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] > 2 :
 					return
-			for n in range (1, gameController.shipSize[ship[0]["type"]]) : 
-				set_cell(0, Vector2(board[str(tile)]["x"]+n,board[str(tile)]["y"]), board[str(tile)]["type"] , Vector2i(0,0), 0) 	
-				set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]+n), 2 , Vector2i(0,0), 0) 	
+			
+			##Updating positions
+			for n in range (1, gameController.shipSize[shipTip["type"]]) : 
+				
+				##Occupying new positions
+				set_cell(0, Vector2(board[str(tile)]["x"]+n,board[str(tile)]["y"]), shipTip["type"] , Vector2i(0,0), 0) 	
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] = shipTip["type"]
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] =  shipTip["boat"]
+				##board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
+				
+				##Clearing old positions
+				set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]+n), 2 , Vector2i(0,0), 0)
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["type"] = 2
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["boat"] = -1
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["vertical"] = false
+				
+		else : 
+			
+			##Checking if the new position are unoccupied
+			for n in range (1, gameController.shipSize[shipTip["type"]]) : 
+				if board[Vector2(shipTip["x"],shipTip["y"]+n)]["type"] > 2 :
+					return
+					
+			##Updating positions
+			for n in range (1, gameController.shipSize[shipTip["type"]]) : 
+				
+				##Occupying new positions
+				set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]+n), shipTip["type"] , Vector2i(0,0), 0) 	
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["type"] = shipTip["type"]
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["boat"] =  shipTip["boat"]
+				board[Vector2(shipTip["x"],shipTip["y"]+n)]["vertical"] = true
+				
+				##Clearing old positions
+				set_cell(0, Vector2(board[str(tile)]["x"]+n,board[str(tile)]["y"]), 2 , Vector2i(0,0), 0)
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] = 2
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] = -1
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
 
 func moveShip(tile): 
 	pass
