@@ -102,13 +102,13 @@ func rotateShip(tile, board):
 			for n in range (1, gameController.shipSize[shipTip["type"]]) : 
 				
 				##Occupying new positions
-				set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]+n), shipTip["type"] , Vector2i(0,0), 0) 	
+				set_cell(0, Vector2(shipTip["x"],shipTip["y"]+n), shipTip["type"] , Vector2i(0,0), 0) 	
 				board[Vector2(shipTip["x"],shipTip["y"]+n)]["type"] = shipTip["type"]
 				board[Vector2(shipTip["x"],shipTip["y"]+n)]["boat"] =  shipTip["boat"]
 				board[Vector2(shipTip["x"],shipTip["y"]+n)]["vertical"] = true
 				
 				##Clearing old positions
-				set_cell(0, Vector2(board[str(tile)]["x"]+n,board[str(tile)]["y"]), 2 , Vector2i(0,0), 0)
+				set_cell(0, Vector2(shipTip["x"]+n,shipTip["y"]), 2 , Vector2i(0,0), 0)
 				board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] = 2
 				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] = -1
 				board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
