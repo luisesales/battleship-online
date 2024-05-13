@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://redpvlt4tscl" path="res://Assets/Sprites/submarine.png" id="2_qalu5"]
 
 [node name="Submarine" type="Node2D"]
+z_index = 1
 script = ExtResource("1_urrpx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
