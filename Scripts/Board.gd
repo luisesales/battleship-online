@@ -82,7 +82,7 @@ func rotateShip(tile, board):
 				##Occupying new positions
 				set_cell(0, Vector2(shipTip["x"]+n,shipTip["y"]), shipTip["type"] , Vector2i(0,0), 0) 	
 				board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] = shipTip["type"]
-				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] =  shipTip["boat"]
+				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] = shipTip["boat"]
 				##board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
 				
 				##Clearing old positions
@@ -114,7 +114,39 @@ func rotateShip(tile, board):
 				board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
 
 func moveShip(tile): 
-	pass
+	##Checks if the tile has a boat
+	if(gameController.playerBoard[str(tile)]["type"] > 2):
+		
+		##Shows nad positions the selected boat into the clicked space
+		var shipTip = locateShipTip(tile, gameController.playerBoard)
+		gameController.tilesBoats[shipTip["type"]].show()
+		gameController.tilesBoats[shipTip["type"]].position = shipTip.position
+		gameController.tilesBoats[shipTip["type"]].isSelected = true
+
+func positionShip(tile,board):
+	##Defines the tile for the selected boat
+	var boatTile = gameController.boatsTiles[gameController.selectedShip]
+	
+	##Checks if boat is in vertical
+	if(gameController.selectedShip.isVertical):
+		
+		##Checks if any parts are outside the board
+		if(tile["y"] + gameController.shipSize[boatTile] <= gameController.gridSize) : 
+			
+			##Checks if positions are avaliable
+			for n in range (0, gameController.shipSize[boatTile]) :
+				if(board[Vector2(tile["x"],tile["y"]+n)]["type"] != 2) :
+					return true
+					
+			##Updates positions					
+			for n in range (0, gameController.shipSize[boatTile]) :
+				set_cell(0, Vector2(tile["x"],tile["y"]+n), boatTile , Vector2i(0,0), 0) 	
+				board[Vector2(tile["x"],tile["y"]+n)]["type"] = boatTile
+				board[Vector2(tile["x"],tile["y"]+n)]["boat"] = boatTile
+				board[Vector2(tile["x"],tile["y"]+n)]["vertical"] = true
+				
+			##Hides the node
+			gameController.selectedShip.hide()
 			
 func selectTile(tile):	
 		set_cell(1, tile, 9, Vector2i(0,0), 0)
@@ -131,11 +163,16 @@ func _process(delta):
 			set_cell(1, aux, 8, Vector2i(0,0), 0)
 	if gameController.playerBoard.has(str(tile)):
 		selectTile(tile)	
-		if(Input.is_action_just_pressed("mb_left")):
-			moveShip(tile)
-		if(Input.is_action_just_pressed("mb_right")):
-			rotateShip(tile, gameController.playerBoard)
+		if(gameController.current_state == gameController.state.PREPARING) :
+			if(Input.is_action_just_pressed("mb_left")):
+				moveShip(tile)
+			if(Input.is_action_just_pressed("mb_right")):
+				rotateShip(tile, gameController.playerBoard)
+			if(gameController.selectedShip.isReleased) :
+				if(positionShip(tile, gameController.playerBoard)):
+					gameController.selectedShip.position = gameController.selectedShip.lastAvaliablePosition				
+				gameController.selectedShip = null	
 	if gameController.enemyBoard.has(str(tile)):
 		selectTile(tile)	
-		if(Input.is_action_just_pressed("mb_left")):
+		if(Input.is_action_just_pressed("mb_left") && gameController.current_state == gameController.state.PLAYERTURN):
 			attack(tile, gameController.enemyBoard)
