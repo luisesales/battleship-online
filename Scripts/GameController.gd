@@ -39,4 +39,5 @@ var boatsTiles = {
 	submarine : 7
 }
 
-var selectedShip
+var selectedShip = null
+

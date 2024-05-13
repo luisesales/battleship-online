@@ -125,6 +125,12 @@ func moveShip(tile):
 
 func positionShip(tile,board):
 	##Defines the tile for the selected boat
+	#print(gameController.battleship)
+	#print(gameController.carrier)
+	print(gameController.destroyer)
+	#print(gameController.patrolBoat)
+	#print(gameController.submarine)
+	print(gameController.selectedShip)
 	var boatTile = gameController.boatsTiles[gameController.selectedShip]
 	
 	##Checks if boat is in vertical
@@ -168,7 +174,7 @@ func _process(delta):
 				moveShip(tile)
 			if(Input.is_action_just_pressed("mb_right")):
 				rotateShip(tile, gameController.playerBoard)
-			if(gameController.selectedShip.isReleased) :
+			if(gameController.selectedShip != null and gameController.selectedShip.isReleased) :
 				if(positionShip(tile, gameController.playerBoard)):
 					gameController.selectedShip.position = gameController.selectedShip.lastAvaliablePosition				
 				gameController.selectedShip = null	
