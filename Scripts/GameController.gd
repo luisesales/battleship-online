@@ -1,20 +1,12 @@
 extends Node2D
 
+##Game State 
 enum state {PREPARING, PLAYERTURN, ENEMYTURN, RESULT}
 var current_state: state = state.PREPARING
 
+##Constant variables
 const gridSize = 10
 const gridDistance = 2
-
-@onready var battleship = $Battleship
-@onready var carrier = $Carrier 
-@onready var destroyer = $Destroyer
-@onready var patrolBoat = $PatrolBoat
-@onready var submarine = $Submarine
-
-@export var playerBoard = {} 
-@export var enemyBoard = {}
-
 const shipSize = {
 	3 : 4,
 	4 : 5,
@@ -23,21 +15,21 @@ const shipSize = {
 	7 : 3
 }
 
-var tilesBoats = {
-	3 : battleship,
-	4 : carrier,
-	5 : destroyer,
-	6 : patrolBoat,
-	7 : submarine
-}
+##Script associated nodes
+var battleship 
+var carrier 
+var destroyer 
+var patrolBoat
+var submarine
 
-var boatsTiles = {
-	battleship : 3,
-	carrier : 4,
-	destroyer : 5,
-	patrolBoat : 6,
-	submarine : 7
-}
+##Script Generated Dictionaries
+@export var playerBoard = {} 
+@export var enemyBoard = {}
+var tilesBoats 
+var boatsTiles 
 
+##Control variable
 var selectedShip = null
+
+	
 

@@ -1,7 +1,6 @@
 extends Node2D
 
 @onready var ship = $Sprite2D
-@onready var gameController = GameController
 
 ## Control Variables
 var isVertical 
@@ -32,7 +31,7 @@ func _input(event):
 func _process(delta):
 	if isSelected :		
 		position = get_viewport().get_mouse_position()
-		gameController.selectedShip = get_node(get_path())		
+		GameController.selectedShip = get_node(get_path())		
 		if Input.is_action_just_released("mb_left"):
 			isSelected = false		
 			isReleased = true
