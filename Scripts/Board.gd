@@ -9,7 +9,7 @@ func _ready():
 	for x in GameController.gridSize:
 		for y in GameController.gridSize:
 			GameController.playerBoard[str(Vector2(x,y))] = {
-					"type": 0 ,
+					"type": 2 ,
 					"x" : x,
 					"y" : y,
 					"vertical" : false,
@@ -23,7 +23,7 @@ func _ready():
 	for x in range(GameController.gridSize + GameController.gridDistance, 2* GameController.gridSize + GameController.gridDistance) : 
 		for y in GameController.gridSize: 
 			GameController.enemyBoard[str(Vector2(x,y))] = {
-					"type": 0 ,
+					"type": 2 ,
 					"x" : x,
 					"y" : y,
 					"vertical" : false,
@@ -146,12 +146,6 @@ func moveShip(tile):
 
 func positionShip(tile,board):
 	##Defines the tile for the selected boat
-	#print(GameController.battleship)
-	#print(GameController.carrier)
-	print(GameController.destroyer)
-	#print(GameController.patrolBoat)
-	#print(GameController.submarine)
-	print(GameController.selectedShip)
 	var boatTile = GameController.boatsTiles[GameController.selectedShip]
 	
 	##Checks if boat is in vertical
@@ -161,19 +155,37 @@ func positionShip(tile,board):
 		if(tile["y"] + GameController.shipSize[boatTile] <= GameController.gridSize) : 
 			
 			##Checks if positions are avaliable
-			for n in range (0, GameController.shipSize[boatTile]) :
-				if(board[Vector2(tile["x"],tile["y"]+n)]["type"] != 2) :
-					return true
+			for n in range (GameController.shipSize[boatTile]) :	
+				if(board[str(Vector2(tile["x"],tile["y"]+n))]["type"] != 2) :
+					return false
 					
 			##Updates positions					
-			for n in range (0, GameController.shipSize[boatTile]) :
+			for n in range (GameController.shipSize[boatTile]) :						
 				set_cell(0, Vector2(tile["x"],tile["y"]+n), boatTile , Vector2i(0,0), 0) 	
-				board[Vector2(tile["x"],tile["y"]+n)]["type"] = boatTile
-				board[Vector2(tile["x"],tile["y"]+n)]["boat"] = boatTile
-				board[Vector2(tile["x"],tile["y"]+n)]["vertical"] = true
+				board[str(Vector2(tile["x"],tile["y"]+n))]["type"] = boatTile
+				board[str(Vector2(tile["x"],tile["y"]+n))]["boat"] = boatTile
+				board[str(Vector2(tile["x"],tile["y"]+n))]["vertical"] = true
 				
-			##Hides the node
-			GameController.selectedShip.hide()
+				
+			return true
+	else :
+		
+		##Checks if any parts are outside the board
+		if(tile["x"] + GameController.shipSize[boatTile] <= GameController.gridSize) : 
+			
+			for n in range (GameController.shipSize[boatTile]) :
+				if(board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] != 2) :
+					return false
+					
+			##Updates positions					
+			for n in range (GameController.shipSize[boatTile]) :
+				set_cell(0, Vector2(tile["x"]+n,tile["y"]), boatTile , Vector2i(0,0), 0) 	
+				board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] = boatTile
+				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile
+				
+			return true	
+					
+	return false
 			
 func selectTile(tile):	
 		set_cell(1, tile, 9, Vector2i(0,0), 0)
@@ -196,7 +208,10 @@ func _process(delta):
 			if(Input.is_action_just_pressed("mb_right")):
 				rotateShip(tile, GameController.playerBoard)
 			if(GameController.selectedShip != null and GameController.selectedShip.isReleased) :
-				if(positionShip(tile, GameController.playerBoard)):
+				if(positionShip(tile, GameController.playerBoard)):	
+					GameController.selectedShip.lastAvaliablePosition = map_to_local(Vector2i(tile["x"],tile["y"]))
+					##GameController.selectedShip.hide()
+				else:
 					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition				
 				GameController.selectedShip = null	
 	if GameController.enemyBoard.has(str(tile)):
