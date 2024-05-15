@@ -1,5 +1,6 @@
 extends TileMap
 
+##Var for selecting a tile in board
 var tile = null
 var aux = null
 
@@ -210,7 +211,8 @@ func _process(delta):
 			if(GameController.selectedShip != null and GameController.selectedShip.isReleased) :
 				if(positionShip(tile, GameController.playerBoard)):	
 					GameController.selectedShip.lastAvaliablePosition = map_to_local(Vector2i(tile["x"],tile["y"]))
-					##GameController.selectedShip.hide()
+					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition
+					GameController.selectedShip.hide()
 				else:
 					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition				
 				GameController.selectedShip = null	
