@@ -1,35 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://c6bfprwg2iddv"]
+[gd_scene load_steps=8 format=3 uid="uid://c6bfprwg2iddv"]
 
 [ext_resource type="TileSet" uid="uid://c6nk8yxyjyrmn" path="res://Assets/Tile Sets/Board.tres" id="1_6wnpb"]
 [ext_resource type="Script" path="res://Scripts/Board.gd" id="2_ibkaa"]
-[ext_resource type="PackedScene" uid="uid://cdvnl1rgeut78" path="res://Scenes/carrier.tscn" id="4_0wgtd"]
-[ext_resource type="Script" path="res://Scripts/GameController.gd" id="4_4y3qs"]
-[ext_resource type="PackedScene" uid="uid://nrvhe6vk2o4u" path="res://Scenes/destroyer.tscn" id="5_rospm"]
-[ext_resource type="PackedScene" uid="uid://dxlp5sydj3r86" path="res://Scenes/battleship.tscn" id="6_npvbc"]
-[ext_resource type="PackedScene" uid="uid://clxtqlte2ppjq" path="res://Scenes/patrolboat.tscn" id="7_8mkm0"]
-[ext_resource type="PackedScene" uid="uid://bygtlyggtshc" path="res://Scenes/submarine.tscn" id="8_frypf"]
+[ext_resource type="PackedScene" uid="uid://cdvnl1rgeut78" path="res://Scenes/Ships/carrier.tscn" id="4_0wgtd"]
+[ext_resource type="PackedScene" uid="uid://nrvhe6vk2o4u" path="res://Scenes/Ships/destroyer.tscn" id="5_rospm"]
+[ext_resource type="PackedScene" uid="uid://dxlp5sydj3r86" path="res://Scenes/Ships/battleship.tscn" id="6_npvbc"]
+[ext_resource type="PackedScene" uid="uid://clxtqlte2ppjq" path="res://Scenes/Ships/patrolboat.tscn" id="7_8mkm0"]
+[ext_resource type="PackedScene" uid="uid://bygtlyggtshc" path="res://Scenes/Ships/submarine.tscn" id="8_frypf"]
 
 [node name="Node2D" type="Node2D"]
 
-[node name="GameController" type="Node2D" parent="."]
-script = ExtResource("4_4y3qs")
-
-[node name="Submarine" parent="GameController" instance=ExtResource("8_frypf")]
-position = Vector2(760, 515)
-
-[node name="PatrolBoat" parent="GameController" instance=ExtResource("7_8mkm0")]
-position = Vector2(640, 515)
-
-[node name="Battleship" parent="GameController" instance=ExtResource("6_npvbc")]
-position = Vector2(440, 515)
-
-[node name="Destroyer" parent="GameController" instance=ExtResource("5_rospm")]
-position = Vector2(280, 515)
-
-[node name="Carrier" parent="GameController" instance=ExtResource("4_0wgtd")]
-position = Vector2(40, 515)
-
-[node name="Board" type="TileMap" parent="GameController"]
+[node name="Board" type="TileMap" parent="."]
 tile_set = ExtResource("1_6wnpb")
 rendering_quadrant_size = 100
 format = 2
@@ -37,3 +18,18 @@ layer_0/name = "BaseTile"
 layer_1/name = "SelectedTile"
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("2_ibkaa")
+
+[node name="Submarine" parent="Board" instance=ExtResource("8_frypf")]
+position = Vector2(760, 515)
+
+[node name="PatrolBoat" parent="Board" instance=ExtResource("7_8mkm0")]
+position = Vector2(640, 515)
+
+[node name="Battleship" parent="Board" instance=ExtResource("6_npvbc")]
+position = Vector2(440, 515)
+
+[node name="Destroyer" parent="Board" instance=ExtResource("5_rospm")]
+position = Vector2(280, 515)
+
+[node name="Carrier" parent="Board" instance=ExtResource("4_0wgtd")]
+position = Vector2(40, 515)
