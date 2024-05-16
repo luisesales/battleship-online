@@ -14,6 +14,14 @@ func _ready():
 	isReleased = false
 	lastAvaliablePosition = position
 
+func _rotate_ship():
+	if(isVertical == false) :
+				ship.rotate(PI/2)
+				isVertical = true
+	else :
+				ship.rotate(-PI/2)
+				isVertical = false
+	
 func _input(event):
 	if(ship.get_rect().has_point(to_local(event.position))):
 		if(event.is_action_pressed("mb_left")): 
@@ -21,12 +29,8 @@ func _input(event):
 			isSelected = true
 			isReleased = false
 		if(event.is_action_pressed("mb_right")):
-			if(isVertical == false) :
-				ship.rotate(PI/2)
-				isVertical = true
-			else :
-				ship.rotate(-PI/2)
-				isVertical = false
+			_rotate_ship()
+			
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if isSelected :		
