@@ -152,6 +152,24 @@ func positionShip(tile,board):
 	
 	##Defines the last position the boat was
 	var lastPosition = local_to_map(GameController.selectedShip.lastAvaliablePosition)	
+	
+	##Checks if boat was already in the board	
+	if(GameController.playerBoard.has(str(lastPosition))) :
+		if(GameController.playerBoard[str(lastPosition)]["vertical"]) :
+		
+			##Clears the last positions
+			for n in range(GameController.shipSize[boatTile]) :
+				set_cell(0, Vector2(lastPosition.x,lastPosition.y+n), 2 , Vector2i(0,0), 0)	
+				board[str(Vector2(lastPosition.x,lastPosition.y+n))]["type"] = 2							
+				board[str(Vector2(lastPosition.x,lastPosition.y+n))]["boat"] = -1
+				board[str(Vector2(lastPosition.x,lastPosition.y+n))]["vertical"] = false
+		else:
+			
+			##Clears the last positions
+				for n in range(GameController.shipSize[boatTile]) :
+					set_cell(0, Vector2(lastPosition.x+n,lastPosition.y), 2 , Vector2i(0,0), 0)	
+					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["type"] = 2							
+					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["boat"] = -1
 										
 	##Checks if boat is in vertical
 	if(GameController.selectedShip.isVertical):
@@ -171,14 +189,7 @@ func positionShip(tile,board):
 				board[str(Vector2(tile["x"],tile["y"]+n))]["boat"] = boatTile
 				board[str(Vector2(tile["x"],tile["y"]+n))]["vertical"] = true
 				
-			##Checks if boat was already in the board	
-			if(GameController.playerBoard.has(str(lastPosition))) :
-				
-				##Clears the last positions
-				for n in range(GameController.shipSize[boatTile]) :
-					set_cell(0, Vector2(lastPosition.x,lastPosition.y+n), 2 , Vector2i(0,0), 0)	
-					board[str(Vector2(lastPosition.x,lastPosition.y+n))]["type"] = 2							
-					board[str(Vector2(lastPosition.x,lastPosition.y+n))]["boat"] = -1
+			
 				
 			return true
 	else :
@@ -194,16 +205,7 @@ func positionShip(tile,board):
 			for n in range (GameController.shipSize[boatTile]) :
 				set_cell(0, Vector2(tile["x"]+n,tile["y"]), boatTile , Vector2i(0,0), 0) 	
 				board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] = boatTile
-				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile
-				
-			##Checks if boat was already in the board	
-			if(GameController.playerBoard.has(str(lastPosition))) :	
-				
-			##Clears the last positions
-				for n in range(GameController.shipSize[boatTile]) :
-					set_cell(0, Vector2(lastPosition.x+n,lastPosition.y), 2 , Vector2i(0,0), 0)	
-					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["type"] = 2							
-					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["boat"] = -1
+				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile						
 				
 			return true	
 					
