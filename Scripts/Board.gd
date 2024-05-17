@@ -81,7 +81,7 @@ func attack(tile, board):
 			##Updating to hit tile
 			board[str(tile)]["type"] = 1	
 				
-		set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]), board[str(tile)]["type"] , Vector2i(0,0), 0) 	
+		set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]), board[str(tile)]["type"] , Vector2i(0,0), 0) 			
 
 func rotateShip(tile, board):
 	##Checking if There's a boat in tile
@@ -146,16 +146,11 @@ func moveShip(tile):
 		GameController.tilesBoats[GameController.playerBoard[str(shipTip)]["type"]].show()		
 		GameController.tilesBoats[GameController.playerBoard[str(shipTip)]["type"]].isSelected = true
 
-func positionShip(tile,board):
-	##Defines the tile for the selected boat	
-	var boatTile = GameController.boatsTiles[GameController.selectedShip]	
-	
-	##Defines the last position the boat was
-	var lastPosition = local_to_map(GameController.selectedShip.lastAvaliablePosition)	
+func clearPosition(lastPosition,boatTile,board):
 	
 	##Checks if boat was already in the board	
-	if(GameController.playerBoard.has(str(lastPosition))) :
-		if(GameController.playerBoard[str(lastPosition)]["vertical"]) :
+	if(GameController.playerBoard.has(str(GameController.lastPosition))) :
+		if(GameController.playerBoard[str(GameController.lastPosition)]["vertical"]) :
 		
 			##Clears the last positions
 			for n in range(GameController.shipSize[boatTile]) :
@@ -167,9 +162,17 @@ func positionShip(tile,board):
 			
 			##Clears the last positions
 				for n in range(GameController.shipSize[boatTile]) :
-					set_cell(0, Vector2(lastPosition.x+n,lastPosition.y), 2 , Vector2i(0,0), 0)	
-					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["type"] = 2							
-					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["boat"] = -1
+					set_cell(0, Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y), 2 , Vector2i(0,0), 0)	
+					board[str(Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y))]["type"] = 2							
+					board[str(Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y))]["boat"] = -1
+
+func positionShip(tile,board):
+	##Defines the tile for the selected boat	
+	var boatTile = GameController.boatsTiles[GameController.selectedShip]	
+	
+	##Defines the last position the boat was
+	var lastPosition = local_to_map(GameController.selectedShip.lastAvaliablePosition)	
+	
 										
 	##Checks if boat is in vertical
 	if(GameController.selectedShip.isVertical):
@@ -189,7 +192,7 @@ func positionShip(tile,board):
 				board[str(Vector2(tile["x"],tile["y"]+n))]["boat"] = boatTile
 				board[str(Vector2(tile["x"],tile["y"]+n))]["vertical"] = true
 				
-			
+			clearPosition(lastPosition,boatTile,board)
 				
 			return true
 	else :
@@ -205,7 +208,9 @@ func positionShip(tile,board):
 			for n in range (GameController.shipSize[boatTile]) :
 				set_cell(0, Vector2(tile["x"]+n,tile["y"]), boatTile , Vector2i(0,0), 0) 	
 				board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] = boatTile
-				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile						
+				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile	
+				
+			clearPosition(lastPosition,boatTile,board)					
 				
 			return true	
 					
@@ -237,7 +242,8 @@ func _process(delta):
 					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition
 					GameController.selectedShip.hide()
 				else:
-					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition				
+					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition	
+								
 				GameController.selectedShip = null	
 	if GameController.enemyBoard.has(str(tile)):
 		selectTile(tile)	
