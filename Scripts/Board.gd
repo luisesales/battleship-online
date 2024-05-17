@@ -145,12 +145,18 @@ func moveShip(tile):
 		var shipTip = locateShipTip(tile, GameController.playerBoard)
 		GameController.tilesBoats[GameController.playerBoard[str(shipTip)]["type"]].show()		
 		GameController.tilesBoats[GameController.playerBoard[str(shipTip)]["type"]].isSelected = true
+		
+func returnShip(lastPosition,board):
+	GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition	
+	if(board.has(str(lastPosition))):
+		if(board[str(lastPosition)]["vertical"] != GameController.selectedShip.isVertical):
+			GameController.selectedShip._rotate_ship()
 
 func clearPosition(lastPosition,boatTile,board):
-	
+
 	##Checks if boat was already in the board	
-	if(GameController.playerBoard.has(str(GameController.lastPosition))) :
-		if(GameController.playerBoard[str(GameController.lastPosition)]["vertical"]) :
+	if(board.has(str(lastPosition))) :
+		if(board[str(lastPosition)]["vertical"]) :
 		
 			##Clears the last positions
 			for n in range(GameController.shipSize[boatTile]) :
@@ -162,9 +168,13 @@ func clearPosition(lastPosition,boatTile,board):
 			
 			##Clears the last positions
 				for n in range(GameController.shipSize[boatTile]) :
-					set_cell(0, Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y), 2 , Vector2i(0,0), 0)	
-					board[str(Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y))]["type"] = 2							
-					board[str(Vector2(GameController.lastPosition.x+n,GameController.lastPosition.y))]["boat"] = -1
+					set_cell(0, Vector2(lastPosition.x+n,lastPosition.y), 2 , Vector2i(0,0), 0)	
+					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["type"] = 2							
+					board[str(Vector2(lastPosition.x+n,lastPosition.y))]["boat"] = -1
+					
+	GameController.selectedShip.lastAvaliablePosition = map_to_local(Vector2i(tile["x"],tile["y"]))
+	GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition
+	GameController.selectedShip.hide()
 
 func positionShip(tile,board):
 	##Defines the tile for the selected boat	
@@ -183,7 +193,8 @@ func positionShip(tile,board):
 			##Checks if positions are avaliable
 			for n in range (GameController.shipSize[boatTile]) :	
 				if(board[str(Vector2(tile["x"],tile["y"]+n))]["type"] != 2) :
-					return false
+					returnShip(lastPosition,board)
+					return
 					
 			##Updates positions					
 			for n in range (GameController.shipSize[boatTile]) :						
@@ -192,9 +203,8 @@ func positionShip(tile,board):
 				board[str(Vector2(tile["x"],tile["y"]+n))]["boat"] = boatTile
 				board[str(Vector2(tile["x"],tile["y"]+n))]["vertical"] = true
 				
-			clearPosition(lastPosition,boatTile,board)
-				
-			return true
+			clearPosition(lastPosition,boatTile,board)				
+			return
 	else :
 		
 		##Checks if any parts are outside the board
@@ -202,7 +212,8 @@ func positionShip(tile,board):
 			
 			for n in range (GameController.shipSize[boatTile]) :
 				if(board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] != 2) :
-					return false
+					returnShip(lastPosition,board)
+					return 
 					
 			##Updates positions					
 			for n in range (GameController.shipSize[boatTile]) :
@@ -210,11 +221,11 @@ func positionShip(tile,board):
 				board[str(Vector2(tile["x"]+n,tile["y"]))]["type"] = boatTile
 				board[str(Vector2(tile["x"]+n,tile["y"]))]["boat"] = boatTile	
 				
-			clearPosition(lastPosition,boatTile,board)					
-				
-			return true	
+			clearPosition(lastPosition,boatTile,board)									
+			return
 					
-	return false
+	returnShip(lastPosition,board)				
+	return
 			
 func selectTile(tile):	
 		set_cell(1, tile, 9, Vector2i(0,0), 0)
@@ -237,13 +248,7 @@ func _process(delta):
 			if(Input.is_action_just_pressed("mb_right")):
 				rotateShip(tile, GameController.playerBoard)
 			if(GameController.selectedShip != null and GameController.selectedShip.isReleased) :
-				if(positionShip(tile, GameController.playerBoard)):	
-					GameController.selectedShip.lastAvaliablePosition = map_to_local(Vector2i(tile["x"],tile["y"]))
-					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition
-					GameController.selectedShip.hide()
-				else:
-					GameController.selectedShip.position = GameController.selectedShip.lastAvaliablePosition	
-								
+				positionShip(tile, GameController.playerBoard)
 				GameController.selectedShip = null	
 	if GameController.enemyBoard.has(str(tile)):
 		selectTile(tile)	
