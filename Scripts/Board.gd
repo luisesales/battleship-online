@@ -81,7 +81,7 @@ func attack(tile, board):
 			##Updating to hit tile
 			board[str(tile)]["type"] = 1	
 				
-		set_cell(0, Vector2(board[str(tile)]["x"],board[str(tile)]["y"]), board[str(tile)]["type"] , Vector2i(0,0), 0) 			
+		set_cell(0, tile, board[str(tile)]["type"] , Vector2i(0,0), 0) 			
 
 func rotateShip(tile, board):
 	##Checking if There's a boat in tile
@@ -91,27 +91,27 @@ func rotateShip(tile, board):
 		var shipTip = locateShipTip(tile, board)
 		
 		##Checking if boat's on the vertical 
-		if 	shipTip["vertical"] :
+		if 	board[str(shipTip)]["vertical"] :
 			
 			##Checking if the new position are unoccupied
-			for n in range (1, GameController.shipSize[shipTip["type"]]) : 
-				if board[str(Vector2(shipTip["x"]+n,shipTip["y"]))]["type"] > 2 :
+			for n in range (1, GameController.shipSize[board[str(shipTip)]["type"]]) : 
+				if board[str(Vector2(shipTip.x+n,shipTip.y))]["type"] > 2 :
 					return
 			
 			##Updating positions
 			for n in range (1, GameController.shipSize[shipTip["type"]]) : 
 				
 				##Occupying new positions
-				set_cell(0, Vector2(shipTip["x"]+n,shipTip["y"]), shipTip["type"] , Vector2i(0,0), 0) 	
-				board[str(Vector2(shipTip["x"]+n,shipTip["y"]))]["type"] = shipTip["type"]
-				board[str(Vector2(shipTip["x"]+n,shipTip["y"]))]["boat"] = shipTip["boat"]
-				board[str(Vector2(shipTip["x"]+n,shipTip["y"]))]["vertical"] = false
+				set_cell(0, Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]), board[str(shipTip)]["type"] , Vector2i(0,0), 0) 	
+				board[str(Vector2(board[str(shipTip)]["x"]+n,shipTip["y"]))]["type"] = board[str(shipTip)]["type"]
+				board[str(Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]))]["boat"] = board[str(shipTip)]["boat"]
+				board[str(Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]))]["vertical"] = false
 				
 				##Clearing old positions
-				set_cell(0, Vector2(shipTip["x"],shipTip["y"]+n), 2 , Vector2i(0,0), 0)
-				board[Vector2(shipTip["x"],shipTip["y"]+n)]["type"] = 2
-				board[Vector2(shipTip["x"],shipTip["y"]+n)]["boat"] = -1
-				board[Vector2(shipTip["x"],shipTip["y"]+n)]["vertical"] = false
+				set_cell(0, Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n), 2 , Vector2i(0,0), 0)
+				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["type"] = 2
+				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["boat"] = -1
+				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["vertical"] = false
 				
 		else : 
 			
