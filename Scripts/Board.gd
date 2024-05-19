@@ -68,20 +68,24 @@ func locateShipTip(tile, board):
 
 func attack(tile, board):
 	##Checking if tile hasn't been attacked
-	if board[str(tile)]["type"] > 1 : 
+	
+	##Locating the correct tile on board
+	var boardTile = board[str(tile)]
+	
+	if boardTile["type"] > 1 : 
 		
 		##Checking if tile is a water tile
-		if board[str(tile)]["type"] == 2 : 
+		if boardTile["type"] == 2 : 
 			
 			##Updating to miss tile
-			board[str(tile)]["type"] = 0
+			boardTile["type"] = 0
 			
 		else :
 			
 			##Updating to hit tile
-			board[str(tile)]["type"] = 1	
+			boardTile["type"] = 1	
 				
-		set_cell(0, tile, board[str(tile)]["type"] , Vector2i(0,0), 0) 			
+		set_cell(0, tile, boardTile["type"] , Vector2i(0,0), 0) 			
 
 func rotateShip(tile, board):
 	##Checking if There's a boat in tile
@@ -90,54 +94,69 @@ func rotateShip(tile, board):
 		##Locating ship's tip on board	
 		var shipTip = locateShipTip(tile, board)
 		
+		##Locating tile for the tip on board
+		var shipTipTile = board[str(shipTip)]
+		
+		var shipSize = GameController.shipSize[shipTipTile["type"]]
+		
 		##Checking if boat's on the vertical 
-		if 	board[str(shipTip)]["vertical"] :
+		if 	shipTipTile["vertical"] :
+			
+			##Checking if newpositions go ouside board
+			if(shipTipTile["x"]+(shipSize-1) > GameController.gridSize):
+				return
 			
 			##Checking if the new position are unoccupied
-			for n in range (1, GameController.shipSize[board[str(shipTip)]["type"]]) : 
-				if board[str(Vector2(shipTip.x+n,shipTip.y))]["type"] > 2 :
+			for n in range (1, shipSize) : 
+				if board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["type"] > 2:
 					return
 			
 			##Updating positions
-			for n in range (1, GameController.shipSize[shipTip["type"]]) : 
+			for n in range (1, shipSize) : 
 				
 				##Occupying new positions
-				set_cell(0, Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]), board[str(shipTip)]["type"] , Vector2i(0,0), 0) 	
-				board[str(Vector2(board[str(shipTip)]["x"]+n,shipTip["y"]))]["type"] = board[str(shipTip)]["type"]
-				board[str(Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]))]["boat"] = board[str(shipTip)]["boat"]
-				board[str(Vector2(board[str(shipTip)]["x"]+n,board[str(shipTip)]["y"]))]["vertical"] = false
+				set_cell(0, Vector2(shipTipTile["x"]+n,shipTipTile["y"]), shipTipTile["type"] , Vector2i(0,0), 0) 	
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["type"] = shipTipTile["type"]
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["boat"] = shipTipTile["boat"]
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["vertical"] = false
 				
 				##Clearing old positions
-				set_cell(0, Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n), 2 , Vector2i(0,0), 0)
-				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["type"] = 2
-				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["boat"] = -1
-				board[Vector2(board[str(shipTip)]["x"],board[str(shipTip)]["y"]+n)]["vertical"] = false
+				set_cell(0, Vector2(shipTipTile["x"],shipTipTile["y"]+n), 2 , Vector2i(0,0), 0)
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["type"] = 2
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["boat"] = -1
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["vertical"] = false
 				
 		else : 
 			
+			##Checking if newpositions go ouside board
+			if(shipTipTile["y"]+(shipSize-1) > GameController.gridSize):
+				return
+			
 			##Checking if the new position are unoccupied
-			for n in range (1, GameController.shipSize[shipTip["type"]]) : 
-				if board[str(Vector2(shipTip["x"],shipTip["y"]+n))]["type"] > 2 :
+			for n in range (1, shipSize) : 
+				if board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["type"] > 2 :
 					return
 					
 			##Updating positions
-			for n in range (1, GameController.shipSize[shipTip["type"]]) : 
+			for n in range (1, shipSize) : 
 				
 				##Occupying new positions
-				set_cell(0, Vector2(shipTip["x"],shipTip["y"]+n), shipTip["type"] , Vector2i(0,0), 0) 	
-				board[str(Vector2(shipTip["x"],shipTip["y"]+n))]["type"] = shipTip["type"]
-				board[str(Vector2(shipTip["x"],shipTip["y"]+n))]["boat"] =  shipTip["boat"]
-				board[str(Vector2(shipTip["x"],shipTip["y"]+n))]["vertical"] = true
+				set_cell(0, Vector2(shipTipTile["x"],shipTipTile["y"]+n), shipTipTile["type"] , Vector2i(0,0), 0) 	
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["type"] = shipTipTile["type"]
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["boat"] =  shipTipTile["boat"]
+				board[str(Vector2(shipTipTile["x"],shipTipTile["y"]+n))]["vertical"] = true
 				
 				##Clearing old positions
-				set_cell(0, Vector2(shipTip["x"]+n,shipTip["y"]), 2 , Vector2i(0,0), 0)
-				board[Vector2(shipTip["x"]+n,shipTip["y"])]["type"] = 2
-				board[Vector2(shipTip["x"]+n,shipTip["y"])]["boat"] = -1
-				board[Vector2(shipTip["x"]+n,shipTip["y"])]["vertical"] = false
-			
-			GameController.selectedShip._rotate_ship()
+				set_cell(0, Vector2(shipTipTile["x"]+n,shipTipTile["y"]), 2 , Vector2i(0,0), 0)
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["type"] = 2
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["boat"] = -1
+				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["vertical"] = false
+				
+						
+		GameController.tilesBoats[shipTipTile["type"]]._rotate_ship()
 
-func moveShip(tile): 
+func moveShip(tile): 	
+	
 	##Checks if the tile has a boat
 	if(GameController.playerBoard[str(tile)]["type"] > 2):
 		
@@ -151,6 +170,7 @@ func returnShip(lastPosition,board):
 	if(board.has(str(lastPosition))):
 		if(board[str(lastPosition)]["vertical"] != GameController.selectedShip.isVertical):
 			GameController.selectedShip._rotate_ship()
+
 
 func clearPosition(lastPosition,boatTile,board):
 
@@ -245,7 +265,7 @@ func _process(delta):
 		if(GameController.current_state == GameController.state.PREPARING) :
 			if(Input.is_action_just_pressed("mb_left")):
 				moveShip(tile)
-			if(Input.is_action_just_pressed("mb_right")):
+			elif(Input.is_action_just_pressed("mb_right")):
 				rotateShip(tile, GameController.playerBoard)
 			if(GameController.selectedShip != null and GameController.selectedShip.isReleased) :
 				positionShip(tile, GameController.playerBoard)
