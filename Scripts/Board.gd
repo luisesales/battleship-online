@@ -62,8 +62,9 @@ func locateShipTip(tile, board):
 	for boardTile in board :
 		if board[str(boardTile)]["boat"] == board[str(tile)]["boat"] : 
 			shipTip = boardTile
+			print(shipTip)
 			return shipTip
-	
+	return null
 	##return  {piece : data for piece, data in board.items() if data.get("boat") == board[str(tile)]["boat"]}
 
 func attack(tile, board):
@@ -103,7 +104,7 @@ func rotateShip(tile, board):
 		if 	shipTipTile["vertical"] :
 			
 			##Checking if newpositions go ouside board
-			if(shipTipTile["x"]+(shipSize-1) > GameController.gridSize):
+			if(shipTipTile["x"]+shipSize > GameController.gridSize):
 				return
 			
 			##Checking if the new position are unoccupied
@@ -128,8 +129,8 @@ func rotateShip(tile, board):
 				
 		else : 
 			
-			##Checking if newpositions go ouside board
-			if(shipTipTile["y"]+(shipSize-1) > GameController.gridSize):
+			##Checking if new positions go ouside board
+			if(shipTipTile["y"]+shipSize > GameController.gridSize):
 				return
 			
 			##Checking if the new position are unoccupied
@@ -151,9 +152,9 @@ func rotateShip(tile, board):
 				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["type"] = 2
 				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["boat"] = -1
 				board[str(Vector2(shipTipTile["x"]+n,shipTipTile["y"]))]["vertical"] = false
-				
 						
-		GameController.tilesBoats[shipTipTile["type"]]._rotate_ship()
+						
+		#GameController.tilesBoats[shipTipTile["type"]]._rotate_ship()				
 
 func moveShip(tile): 	
 	
@@ -266,7 +267,8 @@ func _process(delta):
 			if(Input.is_action_just_pressed("mb_left")):
 				moveShip(tile)
 			elif(Input.is_action_just_pressed("mb_right")):
-				rotateShip(tile, GameController.playerBoard)
+				#rotateShip(tile, GameController.playerBoard)				
+				pass
 			if(GameController.selectedShip != null and GameController.selectedShip.isReleased) :
 				positionShip(tile, GameController.playerBoard)
 				GameController.selectedShip = null	

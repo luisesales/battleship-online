@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dxlp5sydj3r86"]
 
 [ext_resource type="Texture2D" uid="uid://bvbyvaatwum4i" path="res://Assets/Sprites/battleship.png" id="1_56hck"]
-[ext_resource type="Script" path="res://Scripts/ship.gd" id="1_t4dud"]
+[ext_resource type="Script" path="res://Scripts/Ship.gd" id="1_t4dud"]
 
 [node name="Battleship" type="Node2D"]
 z_index = 1

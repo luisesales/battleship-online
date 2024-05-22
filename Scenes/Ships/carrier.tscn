@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdvnl1rgeut78"]
 
-[ext_resource type="Script" path="res://Scripts/ship.gd" id="1_2ctvi"]
+[ext_resource type="Script" path="res://Scripts/Ship.gd" id="1_2ctvi"]
 [ext_resource type="Texture2D" uid="uid://bi7kl4h8fta4b" path="res://Assets/Sprites/carrier.png" id="2_6y6td"]
 
 [node name="Carrier" type="Node2D"]

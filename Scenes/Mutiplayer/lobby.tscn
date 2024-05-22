@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://cq4g2gxk7j8hy"]
+
+[ext_resource type="Script" path="res://Scripts/Lobby.gd" id="1_h1hpd"]
+[ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_vr355"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("1_h1hpd")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+clip_contents = false
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_left = 132.0
+offset_top = 45.0
+offset_right = 388.0
+offset_bottom = 301.0
+theme_override_font_sizes/normal_font_size = 64
+theme_override_font_sizes/bold_font_size = 0
+text = "Finding Match..."
+fit_content = true
+
+[node name="WebSocketClient" type="Node" parent="."]
+script = ExtResource("2_vr355")

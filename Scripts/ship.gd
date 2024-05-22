@@ -21,6 +21,7 @@ func _rotate_ship():
 	else :
 				ship.rotate(-PI/2)
 				isVertical = false
+				
 	
 func _input(event):
 	if(ship.get_rect().has_point(to_local(event.position))):

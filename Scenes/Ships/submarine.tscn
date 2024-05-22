@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bygtlyggtshc"]
 
-[ext_resource type="Script" path="res://Scripts/ship.gd" id="1_urrpx"]
+[ext_resource type="Script" path="res://Scripts/Ship.gd" id="1_urrpx"]
 [ext_resource type="Texture2D" uid="uid://redpvlt4tscl" path="res://Assets/Sprites/submarine.png" id="2_qalu5"]
 
 [node name="Submarine" type="Node2D"]

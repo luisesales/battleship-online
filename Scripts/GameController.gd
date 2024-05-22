@@ -1,8 +1,10 @@
 extends Node2D
 
 ##Game State 
-enum state {PREPARING, PLAYERTURN, ENEMYTURN, RESULT}
+enum state {LOBBY,PREPARING, PLAYERTURN, ENEMYTURN, RESULT}
 var current_state: state = state.PREPARING
+
+var players = {}
 
 ##Constant variables
 const gridSize = 10
