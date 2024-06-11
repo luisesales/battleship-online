@@ -4,7 +4,8 @@ extends Node2D
 enum state {LOBBY,PREPARING, PLAYERTURN, ENEMYTURN, RESULT}
 var current_state: state = state.PREPARING
 
-var players = {}
+var players = []
+var turn = -1
 
 ##Constant variables
 const gridSize = 10

@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://c6bfprwg2iddv"]
 
 [ext_resource type="TileSet" uid="uid://c6nk8yxyjyrmn" path="res://Assets/Tile Sets/Board.tres" id="1_6wnpb"]
-[ext_resource type="Script" path="res://Scripts/Board.gd" id="2_ibkaa"]
+[ext_resource type="Script" path="res://Scripts/game.gd" id="2_ibkaa"]
 [ext_resource type="PackedScene" uid="uid://cdvnl1rgeut78" path="res://Scenes/Ships/carrier.tscn" id="4_0wgtd"]
 [ext_resource type="PackedScene" uid="uid://nrvhe6vk2o4u" path="res://Scenes/Ships/destroyer.tscn" id="5_rospm"]
 [ext_resource type="PackedScene" uid="uid://dxlp5sydj3r86" path="res://Scenes/Ships/battleship.tscn" id="6_npvbc"]
@@ -9,6 +9,103 @@
 [ext_resource type="PackedScene" uid="uid://bygtlyggtshc" path="res://Scenes/Ships/submarine.tscn" id="8_frypf"]
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("2_ibkaa")
+
+[node name="Lobby" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Lobby"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Lobby/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Lobby/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="NameEdit" type="LineEdit" parent="Lobby/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "A Godot User"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Lobby/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Lobby/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Host" type="Button" parent="Lobby/VBoxContainer/HBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="Control" type="Control" parent="Lobby/VBoxContainer/HBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Connect" type="Button" parent="Lobby/VBoxContainer/HBoxContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Connect to"
+
+[node name="Disconnect" type="Button" parent="Lobby/VBoxContainer/HBoxContainer2/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Disconnect"
+
+[node name="Hostname" type="LineEdit" parent="Lobby/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "localhost"
+placeholder_text = "localhost"
+
+[node name="Control" type="Control" parent="Lobby/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Node" type="Node" parent="Lobby/VBoxContainer"]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Lobby/VBoxContainer/Node"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Lobby/VBoxContainer/Node/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Lobby/VBoxContainer/Node/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Players:"
+
+[node name="ItemList" type="ItemList" parent="Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+same_column_width = true
+
+[node name="Ready" type="Button" parent="Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
+disabled = true
+text = "Ready"
 
 [node name="Board" type="TileMap" parent="."]
 tile_set = ExtResource("1_6wnpb")
@@ -17,7 +114,6 @@ format = 2
 layer_0/name = "BaseTile"
 layer_1/name = "SelectedTile"
 layer_1/tile_data = PackedInt32Array()
-script = ExtResource("2_ibkaa")
 
 [node name="Submarine" parent="Board" instance=ExtResource("8_frypf")]
 position = Vector2(760, 515)
@@ -33,3 +129,8 @@ position = Vector2(280, 515)
 
 [node name="Carrier" parent="Board" instance=ExtResource("4_0wgtd")]
 position = Vector2(40, 515)
+
+[node name="AcceptDialog" type="AcceptDialog" parent="Board"]
+position = Vector2i(250, 250)
+size = Vector2i(158, 100)
+dialog_text = "Connection closed"
