@@ -23,15 +23,16 @@ func _rotate_ship():
 				isVertical = false
 				
 	
-func _input(event):
-	if(ship.get_rect().has_point(to_local(event.position))):
-		if(event.is_action_pressed("mb_left")): 
-			lastAvaliablePosition = position
-			isSelected = true
-			isReleased = false
-		if(event.is_action_pressed("mb_right")):
-			_rotate_ship()
-			
+func _input(event):	
+	if(GameController.current_state == GameController.state.PREPARING) :
+		if(ship.get_rect().has_point(to_local(event.position))) : 
+			if(event.is_action_pressed("mb_left")): 
+				lastAvaliablePosition = position
+				isSelected = true
+				isReleased = false
+			if(event.is_action_pressed("mb_right")):
+				_rotate_ship()
+				
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if isSelected :		

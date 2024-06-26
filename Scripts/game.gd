@@ -1,12 +1,128 @@
 extends Node2D
 
+const DEF_PORT = 8080
+const PROTO_NAME = "ludus"
+
+var peer = null
+
+@onready var _host_btn = $Lobby/VBoxContainer/HBoxContainer2/HBoxContainer/Host
+@onready var _connect_btn = $Lobby/VBoxContainer/HBoxContainer2/HBoxContainer/Connect
+@onready var _disconnect_btn = $Lobby/VBoxContainer/HBoxContainer2/HBoxContainer/Disconnect
+@onready var _name_edit = $Lobby/VBoxContainer/HBoxContainer/NameEdit
+@onready var _host_edit = $Lobby/VBoxContainer/HBoxContainer2/Hostname
+@onready var _game = $Lobby/VBoxContainer/Node
+@onready var _dialog = $Lobby/AcceptDialog
+@onready var multiplayerPeer = ENetMultiplayerPeer.new()
+
+func readyConnection():
+	#warning-ignore-all:return_value_discarded
+	multiplayer.connect("peer_disconnected",Callable(self,"_peer_disconnected"))
+	multiplayer.connect("peer_connected",Callable(self,"_peer_connected"))
+	
+	_dialog.get_label().horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_dialog.get_label().vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	# Set the player name according to the system username. Fallback to the path.
+	if OS.has_environment("USERNAME"):
+		_name_edit.text = OS.get_environment("USERNAME")
+	else:
+		var desktop_path = OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP).replace("\\", "/").split("/")
+		_name_edit.text = desktop_path[desktop_path.size() - 2]
+
+
+func start_game():
+	_host_btn.disabled = true
+	_name_edit.editable = false
+	_host_edit.editable = false
+	_connect_btn.hide()
+	_disconnect_btn.show()
+	start()
+
+
+func stop_game():
+	_host_btn.disabled = false
+	_name_edit.editable = true
+	_host_edit.editable = true
+	_disconnect_btn.hide()
+	_connect_btn.show()
+	stop()
+
+
+func _close_network():
+	
+	if multiplayer.is_connected("server_disconnected",Callable(self,"_close_network")):
+		multiplayer.disconnect("server_disconnected",Callable(self,"_close_network"))
+	if multiplayer.is_connected("connection_failed",Callable(self,"_close_network")):
+		multiplayer.disconnect("connection_failed",Callable(self,"_close_network"))
+	if multiplayer.is_connected("connected_to_server",Callable(self,"_connected")):
+		multiplayer.disconnect("connected_to_server",Callable(self,"_connected"))
+	
+	
+	
+	
+	
+	multiplayerPeer.close()
+	multiplayerPeer = ENetMultiplayerPeer.new()
+
+	
+
+	stop_game()
+	_dialog.show()
+	_dialog.get_ok_button().grab_focus()
+	
+
+
+func _connected():
+	rpc("set_player_name", _name_edit.text)
+
+
+func _peer_connected(id):
+	on_peer_add(id)
+	
+
+func _peer_disconnected(id):
+	on_peer_del(id)
+	if id==1:
+		_close_network()
+
+func _on_host_pressed():
+	
+	multiplayerPeer.create_server(DEF_PORT)
+	
+	if multiplayerPeer.get_connection_status()==MultiplayerPeer.CONNECTION_DISCONNECTED:
+		OS.alert("Connection Failed")
+		return
+	
+	multiplayer.connect("server_disconnected",Callable(self,"_close_network"))
+	multiplayer.set_multiplayer_peer(multiplayerPeer)
+	
+	add_player(1, _name_edit.text)
+	
+	start_game()
+
+
+func _on_disconnect_pressed():
+	_close_network()
+
+
+func _on_connect_pressed():
+	var txt=_host_edit.text
+	if txt=="":
+		OS.alert("Needs host to connect to")
+		return
+	multiplayerPeer.create_client(txt,DEF_PORT)
+	multiplayer.connect("connection_failed",Callable(self,"_close_network"))
+	multiplayer.connect("connected_to_server",Callable(self,"_connected"))
+
+	multiplayer.set_multiplayer_peer(multiplayerPeer)
+	start_game()
+
 
 const _crown = preload("res://icon.svg")
 
 
 @onready var _lobby = $Lobby
 @onready var _list = $Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer/ItemList
-@onready var _action = $Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer/Ready
+@onready var _ready_button = $Lobby/VBoxContainer/Node/HBoxContainer/VBoxContainer/Ready
 @onready var _board = $Board
 
 
@@ -49,7 +165,7 @@ func request_action(action):
 			_list.set_item_icon(i, _crown)
 		else:
 			_list.set_item_icon(i, null)
-	_action.disabled = GameController.players[turn] != multiplayer.get_unique_id()
+	_ready_button.disabled = GameController.players[turn] != multiplayer.get_unique_id()
 
 
 @rpc("any_peer", "call_local") func del_player(id):
@@ -94,7 +210,7 @@ func stop():
 	GameController.players.clear()
 	_list.clear()
 	GameController.turn = 0
-	_action.disabled = true
+	_ready_button.disabled = true
 
 
 func on_peer_add(id):
@@ -114,6 +230,10 @@ func on_peer_del(id):
 
 @rpc("any_peer", "call_local") func _log(what):
 	$HBoxContainer/RichTextLabel.add_text(what + "\n")
+
+
+func _on_ready_pressed():
+	pass 
 
 
 func _on_Action_pressed():
@@ -408,6 +528,7 @@ func updateBoard() :
 
 # Called when the node enters the scene tree for the first time.
 func _ready(): 		
+	readyConnection()
 	_board.hide()	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
